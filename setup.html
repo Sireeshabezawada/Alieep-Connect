@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head><title>ALIEEP Connect - Setup</title>
+<style>body{font-family:sans-serif;max-width:500px;margin:40px auto;padding:20px}
+.btn{background:#C8102E;color:white;border:none;padding:12px 24px;border-radius:8px;font-size:16px;cursor:pointer;width:100%;margin-top:16px}
+.log{background:#f3f4f6;border-radius:8px;padding:16px;margin-top:16px;font-size:13px;font-family:monospace;white-space:pre-wrap;max-height:300px;overflow-y:auto}
+</style>
+</head>
+<body>
+<h2>🔧 ALIEEP Connect — One-Time Setup</h2>
+<p>This will create your Super Admin account and demo accounts in Firebase.</p>
+<div>
+  <label><strong>Your Super Admin Email</strong></label><br>
+  <input id="sa-email" type="email" value="superadmin@alieep.org" style="width:100%;padding:8px;margin:6px 0;border:1px solid #ddd;border-radius:6px">
+</div>
+<div>
+  <label><strong>Your Super Admin Password</strong></label><br>
+  <input id="sa-pass" type="password" placeholder="Choose a strong password" style="width:100%;padding:8px;margin:6px 0;border:1px solid #ddd;border-radius:6px">
+</div>
+<button class="btn" onclick="runSetup()">▶ Run Setup</button>
+<div class="log" id="log">Ready to set up...</div>
+
+<script type="module">
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js';
+import { getAuth, createUserWithEmailAndPassword } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js';
+import { getFirestore, doc, setDoc } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js';
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBkkfOwLcrwEQWSOXdUtFlYPzot2l47mRM",
+  authDomain: "alieep-connect.firebaseapp.com",
+  projectId: "alieep-connect",
+  storageBucket: "alieep-connect.firebasestorage.app",
+  messagingSenderId: "591810655374",
+  appId: "1:591810655374:web:ba9ad5c230e1a50ba0c5df"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+function log(msg) {
+  document.getElementById('log').textContent += '\n' + msg;
+  document.getElementById('log').scrollTop = 999;
+}
+
+window.runSetup = async function() {
+  const saEmail = document.getElementById('sa-email').value.trim();
+  const saPass = document.getElementById('sa-pass').value;
+  if (!saEmail || !saPass) { alert('Please enter email and password'); return; }
+  if (saPass.length < 8) { alert('Password must be at least 8 characters'); return; }
+  
+  document.getElementById('log').textContent = 'Starting setup...';
+  
+  const accounts = [
+    { email: saEmail, pass: saPass, first: 'Dr. Angela', last: 'Rivera', role: 'superadmin' },
+    { email: 'admin@alieep.org', pass: 'demo1234', first: 'David', last: 'Williams', role: 'admin' },
+    { email: 'staff@alieep.org', pass: 'demo1234', first: 'Sarah', last: 'Chen', role: 'staff' },
+    { email: 'applicant@alieep.org', pass: 'demo1234', first: 'Maria', last: 'Santos', role: 'applicant' },
+    { email: 'participant@alieep.org', pass: 'demo1234', first: 'James', last: 'Okonkwo', role: 'participant' },
+  ];
+
+  for (const acc of accounts) {
+    try {
+      log('Creating ' + acc.role + ': ' + acc.email + '...');
+      const cred = await createUserWithEmailAndPassword(auth, acc.email, acc.pass);
+      await setDoc(doc(db, 'users', cred.user.uid), {
+        first: acc.first, last: acc.last, email: acc.email, role: acc.role,
+        active: true, verified: true, policiesAccepted: true,
+        lastLogin: null, createdAt: new Date().toISOString()
+      });
+      log('✅ Created: ' + acc.email);
+    } catch(e) {
+      if (e.code === 'auth/email-already-in-use') {
+        log('⚠️ Already exists: ' + acc.email + ' (skipped)');
+      } else {
+        log('❌ Error for ' + acc.email + ': ' + e.message);
+      }
+    }
+  }
+  log('\n🎉 Setup complete! You can now log in to ALIEEP Connect.');
+  log('Your Super Admin login: ' + saEmail);
+};
+</script>
+</body>
+</html>
