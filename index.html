@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -1690,13 +1691,8 @@ function closeModal() {
 // INIT
 // ============================================================
 function init() {
-  // Inject logos
-  const logoB64 = typeof LOGO_B64!=='undefined' ? LOGO_B64 : '';
-  const iconB64 = typeof ICON_B64!=='undefined' ? ICON_B64 : '';
-  document.querySelectorAll('.logo-img').forEach(el=>{ if(logoB64) el.src='data:image/png;base64,'+logoB64; });
-  document.querySelectorAll('.icon-img').forEach(el=>{ if(iconB64) el.src='data:image/png;base64,'+iconB64; });
-  document.getElementById('tb-icon').src = iconB64 ? 'data:image/png;base64,'+iconB64 : '';
-  showScreen('screen-signin');
+  injectImages();
+  showScreen('screen-auth');
 }
 
 
@@ -1708,7 +1704,7 @@ function signOut() {
   currentUser=null;
   chatMessages=[];
   showToast('Signed out successfully.','info');
-  setTimeout(()=>{ showScreen('screen-signin'); },500);
+  setTimeout(()=>{ showScreen('screen-auth'); },500);
 }
 
 window.addEventListener('load', init);
