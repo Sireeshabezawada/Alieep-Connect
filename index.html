@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="ALIEEP Connect">
-<title>ALIEEP Connect</title>
+<title>ALIEEP Connect v3</title>
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="icons/icon-192.png">
 <style>
@@ -236,6 +236,9 @@ tr:hover td{background:#fafafa}
 @media(max-width:380px){.auth-card{padding:28px 20px}.form-row{grid-template-columns:1fr}}
 @media(min-width:600px){.main-content{max-width:700px;margin:0 auto}.bottom-nav{max-width:700px;left:50%;transform:translateX(-50%)}}
 </style>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 </head>
 <body>
 <!-- AUTH SCREEN -->
@@ -399,14 +402,12 @@ tr:hover td{background:#fafafa}
   <div class="modal" id="modal-content"></div>
 </div>
 
-<script type="module">
+<script>
 
 // ============================================================
 // FIREBASE CONFIGURATION
 // ============================================================
-import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js';
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut as fbSignOut, onAuthStateChanged, sendEmailVerification } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js';
-import { getFirestore, doc, setDoc, getDoc, collection, getDocs, updateDoc, deleteDoc, addDoc, query, orderBy, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js';
+// Firebase compat SDK loaded via CDN
 
 const firebaseConfig = {
   apiKey: "AIzaSyBkkfOwLcrwEQWSOXdUtFlYPzot2l47mRM",
@@ -418,9 +419,10 @@ const firebaseConfig = {
   measurementId: "G-LTB7RMFXH7"
 };
 
-const fbApp = initializeApp(firebaseConfig);
-const auth = getAuth(fbApp);
-const db = getFirestore(fbApp);
+const fbApp = firebase.initializeApp(firebaseConfig);
+const auth = fbApp.auth();
+const db = fbApp.firestore();
+const fbSignOut = () => auth.signOut();
 
 // ============================================================
 // FIREBASE AUTH FUNCTIONS (override demo functions)
@@ -432,13 +434,13 @@ async function doLogin() {
   if (!email || !pass) { showToast('Please enter email and password', 'error'); return; }
   try {
     showToast('Signing in...');
-    const cred = await signInWithEmailAndPassword(auth, email, pass);
-    const userDoc = await getDoc(doc(db, 'users', cred.user.uid));
-    if (!userDoc.exists()) { showToast('Account not found. Contact admin.', 'error'); return; }
+    const cred = await auth.signInWithEmailAndPassword(email, pass);
+    const userDoc = await db.collection('users').doc(cred.user.uid).get();
+    if (!userDoc.exists) { showToast('Account not found. Contact admin.', 'error'); return; }
     const userData = userDoc.data();
     if (!userData.active) { showToast('Account deactivated. Contact admin.', 'error'); return; }
     currentUser = { id: cred.user.uid, ...userData };
-    await updateDoc(doc(db, 'users', cred.user.uid), { lastLogin: new Date().toISOString() });
+    await db.collection('users').doc(cred.user.uid).update({ lastLogin: new Date().toISOString() });
     addAudit('Login', currentUser.first + ' ' + currentUser.last + ' logged in as ' + currentUser.role, '✅', '#d1fae5');
     const needsPolicy = ['applicant','participant'].includes(currentUser.role) && !currentUser.policiesAccepted;
     if (needsPolicy) { showPolicyGate(); } else { launchApp(); }
@@ -465,10 +467,10 @@ async function doSignup() {
   if (!terms) { showToast('You must accept the Terms of Use', 'error'); return; }
   try {
     showToast('Creating account...');
-    const cred = await createUserWithEmailAndPassword(auth, email, pass);
-    await sendEmailVerification(cred.user);
+    const cred = await auth.createUserWithEmailAndPassword(email, pass);
+    await cred.user.sendEmailVerification();
     const userData = { first, last, email, role, active: true, verified: false, policiesAccepted: false, lastLogin: null, createdAt: new Date().toISOString() };
-    await setDoc(doc(db, 'users', cred.user.uid), userData);
+    await db.collection('users').doc(cred.user.uid).set(userData);
     currentUser = { id: cred.user.uid, ...userData };
     addAudit('User Created', 'New ' + role + ' account: ' + first + ' ' + last, '👤', '#d1fae5');
     showToast('Account created! Check your email to verify.', 'success');
@@ -500,7 +502,7 @@ async function signOut() {
     if (currentUser) {
       addAudit('Logout', currentUser.first + ' ' + currentUser.last + ' signed out', '🚪', '#f3f4f6');
     }
-    await fbSignOut(auth);
+    await auth.signOut();
     currentUser = null;
     chatMessages = [];
     showToast('Signed out successfully.', 'info');
@@ -520,9 +522,9 @@ async function createUser() {
   if (!first||!last||!email||!pass) { showToast('Please fill in all fields.', 'error'); return; }
   try {
     // Create via Firebase Auth
-    const cred = await createUserWithEmailAndPassword(auth, email, pass);
+    const cred = await auth.createUserWithEmailAndPassword(email, pass);
     const userData = { first, last, email, role, active: true, verified: true, policiesAccepted: false, lastLogin: null, createdAt: new Date().toISOString() };
-    await setDoc(doc(db, 'users', cred.user.uid), userData);
+    await db.collection('users').doc(cred.user.uid).set(userData);
     USERS.push({ id: cred.user.uid, pass, ...userData });
     addAudit('User Created', currentUser.first + ' ' + currentUser.last + ' created ' + role + ': ' + first + ' ' + last, '👤', '#dcfce7');
     showToast('User created!', 'success');
@@ -540,7 +542,7 @@ async function createUser() {
 // Load users from Firestore
 async function loadUsersFromFirestore() {
   try {
-    const snap = await getDocs(collection(db, 'users'));
+    const snap = await db.collection('users').get();
     snap.forEach(d => {
       const data = d.data();
       if (!USERS.find(u => u.id === d.id)) {
@@ -555,7 +557,7 @@ async function loadUsersFromFirestore() {
 // Save audit to Firestore
 async function saveAuditToFirestore(entry) {
   try {
-    await addDoc(collection(db, 'audit'), { ...entry, timestamp: serverTimestamp() });
+    await db.collection('audit').add({ ...entry, timestamp: firebase.firestore.FieldValue.serverTimestamp() });
   } catch(e) {
     console.log('Could not save audit:', e);
   }
