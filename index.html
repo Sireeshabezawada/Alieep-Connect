@@ -12,8 +12,8 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="ALIEEP Connect">
 <title>ALIEEP Connect</title>
-<link rel="manifest" href="manifest.json">
-<link rel="apple-touch-icon" href="icons/icon-192.png">
+<link rel="manifest" href="manifest.json" crossorigin="use-credentials">
+
 <!-- Firebase Compat SDK -->
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
@@ -190,6 +190,11 @@ td{padding:10px 12px;border-top:1px solid var(--border);vertical-align:middle}
 <div id="screen-loading" class="loading-screen">
   <div class="spinner"></div>
   <p style="color:var(--gray);font-size:14px">Loading ALIEEP Connect...</p>
+  <button id="skip-loading-btn" onclick="showScreen('screen-auth')" 
+    style="display:none;margin-top:20px;padding:10px 20px;background:var(--red);color:white;border:none;border-radius:8px;font-size:14px;cursor:pointer">
+    Continue to Login →
+  </button>
+  <script>setTimeout(()=>{const b=document.getElementById('skip-loading-btn');if(b)b.style.display='block';},4000);</script>
 </div>
 
 <!-- AUTH -->
@@ -2006,8 +2011,13 @@ async function signOut() {
 
 function init() {
   injectImages();
+  // Safety timeout - if loading takes more than 5 seconds, show auth screen
+  const loadingTimeout = setTimeout(()=>{
+    showScreen('screen-auth');
+  }, 5000);
   // Check if already logged in
   auth.onAuthStateChanged(async user=>{
+    clearTimeout(loadingTimeout);
     if(user && !currentUser) {
       try {
         const doc = await db.collection('users').doc(user.uid).get();
@@ -2016,7 +2026,9 @@ function init() {
           launchApp();
           return;
         }
-      } catch(e){}
+      } catch(e){
+        console.log('Auth check failed:', e);
+      }
     }
     showScreen('screen-auth');
   });
