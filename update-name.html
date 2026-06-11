@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head><title>Update Profile</title>
+<style>body{font-family:sans-serif;max-width:500px;margin:40px auto;padding:20px}.btn{background:#C8102E;color:white;border:none;padding:12px 24px;border-radius:8px;font-size:16px;cursor:pointer;width:100%;margin-top:12px}.log{background:#f3f4f6;border-radius:8px;padding:16px;margin-top:16px;font-size:13px;font-family:monospace;white-space:pre-wrap}</style>
+</head>
+<body>
+<h2>🔧 Update Super Admin Name to Siri</h2>
+<p>This will update the name in Firebase to match your real name.</p>
+<div>
+  <label><strong>Your Email</strong></label><br>
+  <input id="email" type="email" value="siree.bez@gmail.com" style="width:100%;padding:8px;margin:6px 0;border:1px solid #ddd;border-radius:6px">
+</div>
+<div>
+  <label><strong>First Name</strong></label><br>
+  <input id="first" type="text" value="Sireesha" style="width:100%;padding:8px;margin:6px 0;border:1px solid #ddd;border-radius:6px">
+</div>
+<div>
+  <label><strong>Last Name</strong></label><br>
+  <input id="last" type="text" value="Bezawada" style="width:100%;padding:8px;margin:6px 0;border:1px solid #ddd;border-radius:6px">
+</div>
+<div>
+  <label><strong>Your Password</strong></label><br>
+  <input id="pass" type="password" placeholder="Your password" style="width:100%;padding:8px;margin:6px 0;border:1px solid #ddd;border-radius:6px">
+</div>
+<button class="btn" onclick="updateName()">Update My Name</button>
+<div class="log" id="log">Ready...</div>
+
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<script>
+const app = firebase.initializeApp({
+  apiKey: "AIzaSyBkkfOwLcrwEQWSOXdUtFlYPzot2l47mRM",
+  authDomain: "alieep-connect.firebaseapp.com",
+  projectId: "alieep-connect",
+  storageBucket: "alieep-connect.firebasestorage.app",
+  messagingSenderId: "591810655374",
+  appId: "1:591810655374:web:ba9ad5c230e1a50ba0c5df"
+});
+const auth = app.auth();
+const db = app.firestore();
+function log(msg){document.getElementById('log').textContent+=msg+'\n';}
+
+window.updateName = async function() {
+  const email = document.getElementById('email').value.trim();
+  const pass = document.getElementById('pass').value;
+  const first = document.getElementById('first').value.trim();
+  const last = document.getElementById('last').value.trim();
+  if(!email||!pass||!first){alert('Fill all fields');return;}
+  try {
+    log('Signing in...');
+    const cred = await auth.signInWithEmailAndPassword(email, pass);
+    log('✅ Signed in as: '+email);
+    log('Updating name to: '+first+' '+last+'...');
+    await db.collection('users').doc(cred.user.uid).update({first, last});
+    log('✅ Name updated to '+first+' '+last+'!');
+    log('\n🎉 Done! Refresh ALIEEP Connect to see your name.');
+  } catch(e){log('❌ Error: '+e.message);}
+};
+</script>
+</body>
+</html>
