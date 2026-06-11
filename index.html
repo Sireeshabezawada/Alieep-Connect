@@ -226,6 +226,11 @@ td{padding:10px 12px;border-top:1px solid var(--border);vertical-align:middle}
           <button class="demo-btn" onclick="demoLogin('admin')">🛡 Admin</button>
           <button class="demo-btn" onclick="demoLogin('superadmin')" style="grid-column:span 2">⚡ Super Admin</button>
         </div>
+        <div class="divider">or sign in with</div>
+        <button onclick="doGoogleLogin()" style="width:100%;padding:11px;border:1.5px solid #e5e7eb;border-radius:8px;background:white;display:flex;align-items:center;justify-content:center;gap:10px;cursor:pointer;font-size:14px;font-weight:600;font-family:var(--font);transition:.2s" onmouseover="this.style.background='#f8f9fa'" onmouseout="this.style.background='white'">
+          <svg width="18" height="18" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/><path fill="none" d="M0 0h48v48H0z"/></svg>
+          Continue with Google
+        </button>
       </div>
       <!-- SIGNUP -->
       <div id="form-signup" class="hidden">
@@ -255,6 +260,11 @@ td{padding:10px 12px;border-top:1px solid var(--border);vertical-align:middle}
           <label for="su-terms" style="font-size:12px;cursor:pointer">I agree to the <a href="https://alieep.org/privacy-policy/" target="_blank" style="color:var(--red)">Privacy Policy</a> and <a href="https://alieep.org/terms/" target="_blank" style="color:var(--red)">Terms of Use</a></label>
         </div>
         <button class="btn btn-primary" onclick="doSignup()">Create Account</button>
+        <div class="divider">or</div>
+        <button onclick="doGoogleLogin()" style="width:100%;padding:11px;border:1.5px solid #e5e7eb;border-radius:8px;background:white;display:flex;align-items:center;justify-content:center;gap:10px;cursor:pointer;font-size:14px;font-weight:600;font-family:var(--font)">
+          <svg width="18" height="18" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/><path fill="none" d="M0 0h48v48H0z"/></svg>
+          Sign up with Google
+        </button>
         <p style="text-align:center;font-size:12px;color:var(--gray);margin-top:12px">Admin/Super Admin accounts are assigned by your organization</p>
       </div>
     </div>
@@ -392,84 +402,54 @@ const AUDIT_LOG = [];
 // ============================================================
 const ALIEEP_PROGRAMS = [
   {
-    id:'steam-educator', icon:'🏫',
+    id:'steam-educator', icon:'🔬',
     title:'S.T.E.A.M. Educator Program',
-    tagline:'Take YOUR CLASSROOM GLOBAL',
-    desc:'Professional development and exchange opportunities for international educators, including teaching practice, mentorship, job support, and certificate conversion. Accepts all teachers from every culture and background.',
+    tagline:'TAKE YOUR CLASSROOM GLOBAL',
+    desc:'A professional development program focused on Science, Technology, Engineering, Arts, and Mathematics education. Helps educators develop innovative teaching, leadership, creativity, project-based learning, and STEAM implementation skills. Accepts all teachers from every culture and background.',
     duration:'1 Academic Year', type:'Exchange', badge:'Open',
     link:'https://alieep.org/steam-educator-program/',
-    requirements:['Valid teaching license or equivalent','2+ years teaching experience','Bachelor\'s degree or higher','English proficiency'],
-    color:'#C8102E'
-  },
-  {
-    id:'intern-exchange', icon:'🌍',
-    title:'Intern Exchange Program',
-    tagline:'TAKE A LEAP WITH ALIEEP',
-    desc:'Our program welcomes participants from all over the world, including India, Europe, Asia, and South America. We believe that a multicultural workplace enhances creativity, innovation, and learning.',
-    duration:'Up to 12 months', type:'Internship', badge:'Open',
-    link:'https://alieep.org/internship/',
-    requirements:['Bachelor\'s degree or currently enrolled','Background in relevant field','Strong communication skills'],
-    color:'#D4A017'
-  },
-  {
-    id:'federal-work-study', icon:'📚',
-    title:'Federal Work-Study Program',
-    tagline:'EARN while you LEARN',
-    desc:'By providing exposure to Alabama community members, adults and children, we create a more harmonious society strengthened in differences and enlightened through exchanges of culture, language, food, and art.',
-    duration:'Semester-based', type:'Work-Study', badge:'Open',
-    link:'https://alieep.org/federal-work-study-program/',
-    requirements:['U.S. citizen or eligible non-citizen','Enrolled in participating institution','Demonstrated financial need'],
-    color:'#059669'
-  },
-  {
-    id:'domestic-intern', icon:'🎯',
-    title:'Domestic Intern Program',
-    tagline:'Start Your Professional Journey',
-    desc:'The ALIEEP internship tailors the experience to each junior or senior\'s major or career path. Selected students will tackle high-stakes projects, engage stakeholders, and see their work benefit the organization.',
-    duration:'Semester-based', type:'Internship', badge:'Open',
-    link:'https://alieep.org/domesticintern/',
-    requirements:['Junior or Senior college student','U.S. resident','Relevant major or career interest'],
-    color:'#7c3aed'
+    requirements:['Valid teaching license or equivalent','2+ years of teaching experience','Bachelor's degree or higher','English proficiency','Clean background check'],
+    color:'#C8102E', color2:'#D4A017'
   },
   {
     id:'aum-resident', icon:'🎓',
     title:'ALIEEP-AUM Resident Program',
     tagline:'BUILD YOUR TEACHING CAREER IN ALABAMA',
-    desc:'Designed for international students in Alabama who want to become educators. Combines academic study at AUM with real classroom experience in local schools, with guidance through certification and career placement.',
-    duration:'1-2 years', type:'Residency', badge:'Open',
+    desc:'A partnership program with Auburn University at Montgomery supporting international educators and professionals through academic and professional development. Provides educational advancement, scholarship awareness, professional learning, academic support, and residency-related program guidance.',
+    duration:'1–2 Years', type:'Residency', badge:'Open',
     link:'https://alieep.org/residentprogram/',
-    requirements:['International student in Alabama','Education-related background','Commitment to teaching career'],
-    color:'#0891b2'
+    requirements:['International student or educator in Alabama','Education-related background','Commitment to teaching career in Alabama','English proficiency'],
+    color:'#0891b2', color2:'#0e7490'
+  },
+  {
+    id:'raie', icon:'🌱',
+    title:'RAIE Program',
+    tagline:'FROM GRADUATE STUDENT TO EDUCATOR',
+    desc:'A professional and educational development program supporting leadership, learning, cultural exchange, and professional growth. Provides participants with opportunities for educational enrichment, collaboration, mentoring, and career development.',
+    duration:'1 Year', type:'Development', badge:'Open',
+    link:'https://alieep.org/raie/',
+    requirements:['International graduate in Alabama','Education or related degree','Commitment to professional development','Strong motivation for growth'],
+    color:'#059669', color2:'#047857'
+  },
+  {
+    id:'ojt-internship', icon:'💼',
+    title:'O.J.T. Internship Program',
+    tagline:'GAIN PROFESSIONAL EXPERIENCE IN THE U.S.',
+    desc:'A practical workplace learning program for students, graduates, and professionals. Provides hands-on experience, workplace exposure, skill development, career readiness, and professional mentoring across various fields including Arts, Education, Business, Sciences, and Engineering.',
+    duration:'Up to 12 Months', type:'J-1 OJT', badge:'Open',
+    link:'https://alieep.org/ojt-internship-program/',
+    requirements:['Background in qualifying field (Arts, Education, Business, Sciences, Engineering, etc.)','University degree or equivalent','J-1 visa sponsorship through ALIEEP','Commitment to learning objectives'],
+    color:'#7c3aed', color2:'#6d28d9'
   },
   {
     id:'j1-exchange-educator', icon:'🇺🇸',
     title:'J-1 Exchange Educator Program',
     tagline:'TEACH IN THE U.S. THROUGH CULTURAL EXCHANGE',
-    desc:'Allows experienced international educators to teach in Alabama K-12 schools while sharing their culture and gaining global teaching experience. Initial 3-year term with option for 2-year extension.',
-    duration:'3 years (extendable to 5)', type:'J-1 Visa', badge:'Open',
+    desc:'A cultural and educational exchange program for qualified international educators. Allows experienced international educators to teach in Alabama K-12 schools while sharing their culture and gaining global teaching experience. Initial 3-year term with option for 2-year extension.',
+    duration:'3 Years (extendable to 5)', type:'J-1 Visa', badge:'Open',
     link:'https://alieep.org/j1-exchange-program/',
-    requirements:['Valid teaching license','2+ years experience','University degree','English proficiency','Clean background check'],
-    color:'#C8102E'
-  },
-  {
-    id:'raie', icon:'🔬',
-    title:'RAIE Program',
-    tagline:'FROM GRADUATE STUDENT TO EDUCATOR',
-    desc:'The RAIE Program supports international graduates in Alabama who are ready to begin their teaching careers. It provides structured guidance, school placement support, and a clear pathway into the Alabama education system.',
-    duration:'1 year', type:'Certification', badge:'Open',
-    link:'https://alieep.org/raie/',
-    requirements:['International graduate in Alabama','Education or related degree','Commitment to K-12 teaching'],
-    color:'#D4A017'
-  },
-  {
-    id:'j1-ojt', icon:'💼',
-    title:'J-1 OJT Program',
-    tagline:'GAIN PROFESSIONAL EXPERIENCE IN THE U.S.',
-    desc:'The J-1 OJT Program offers practical training and internship opportunities across various fields including Arts, Education, Business, Sciences, Engineering, and more. Up to 12 months of real-world experience.',
-    duration:'Up to 12 months', type:'J-1 OJT', badge:'Open',
-    link:'https://alieep.org/ojt-internship-program/',
-    requirements:['Background in qualifying field','University degree or equivalent','Sponsored by ALIEEP'],
-    color:'#059669'
+    requirements:['Valid teaching license from home country','Minimum 2 years of teaching experience','Bachelor's degree or higher in Education','English proficiency','Clean criminal background check','Valid passport'],
+    color:'#C8102E', color2:'#9b0e24'
   }
 ];
 
@@ -680,8 +660,8 @@ async function acceptPolicies() {
 // ============================================================
 function launchApp() {
   document.getElementById('tb-icon').src = 'data:image/png;base64,'+ICON_B64;
-  const titles={applicant:'My Portal',participant:'Participant Hub',staff:'Staff Portal',admin:'Admin Dashboard',superadmin:'Super Admin'};
-  document.getElementById('tb-title').textContent = titles[currentUser.role]||'ALIEEP Connect';
+  const roleTitleMap={applicant:'My Portal',participant:'Participant Hub',staff:'Staff Portal',admin:'Admin Dashboard',superadmin:'Super Admin'};
+  document.getElementById('tb-title').textContent = roleTitleMap[currentUser.role]||'ALIEEP Connect';
   showScreen('screen-app');
   buildNav();
   showView('home');
@@ -1832,16 +1812,27 @@ async function buildNotifications() {
 async function buildProfile() {
   const v = document.getElementById('view-profile');
   const u = currentUser;
+  const initials = ((u.first||'?')[0]+(u.last||'?')[0]).toUpperCase();
   v.innerHTML = `<div style="background:linear-gradient(135deg,var(--red),#8b0e1f);padding:32px 20px 60px;text-align:center;color:white">
-    <div style="width:76px;height:76px;border-radius:50%;background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;font-size:32px;font-weight:800;margin:0 auto 12px;border:3px solid rgba(255,255,255,.4)">${(u.first||'?')[0]}</div>
-    <div style="font-size:20px;font-weight:800">${u.first} ${u.last}</div>
+    <div style="width:76px;height:76px;border-radius:50%;background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:800;margin:0 auto 12px;border:3px solid rgba(255,255,255,.4)">${initials}</div>
+    <div style="font-size:20px;font-weight:800" id="profile-name-display">${u.first} ${u.last}</div>
     <div style="font-size:13px;opacity:.85;margin-top:4px">${u.email}</div>
     <div style="margin-top:8px"><span style="background:rgba(255,255,255,.2);padding:4px 14px;border-radius:20px;font-size:12px;font-weight:700;text-transform:capitalize">${u.role}</span></div>
   </div>
   <div style="margin:-32px 16px 0;position:relative">
     <div class="card">
+      <div class="card-title">Edit Profile</div>
+      <div class="form-row" style="margin-bottom:10px">
+        <div><label style="font-size:12px;font-weight:600;color:var(--gray-dark);display:block;margin-bottom:4px">First Name</label>
+        <input class="input-field" id="profile-first" value="${u.first||''}" placeholder="First name"></div>
+        <div><label style="font-size:12px;font-weight:600;color:var(--gray-dark);display:block;margin-bottom:4px">Last Name</label>
+        <input class="input-field" id="profile-last" value="${u.last||''}" placeholder="Last name"></div>
+      </div>
+      <button class="btn btn-primary btn-sm" style="width:100%" onclick="saveProfileName()">Save Name</button>
+    </div>
+    <div class="card">
       <div class="card-title">Account Details</div>
-      ${[['Email',u.email],['Role',u.role],['Account Status',u.active?'Active':'Inactive'],['Last Login',u.lastLogin||'Today']].map(([l,val])=>`<div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);font-size:14px"><span style="color:var(--gray)">${l}</span><strong>${val}</strong></div>`).join('')}
+      ${[['Email',u.email],['Role',u.role],['Account Status',u.active?'Active':'Inactive'],['Last Login',u.lastLogin?new Date(u.lastLogin).toLocaleString():'Today']].map(([l,val])=>`<div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);font-size:14px"><span style="color:var(--gray)">${l}</span><strong style="text-align:right;max-width:60%">${val}</strong></div>`).join('')}
     </div>
     <div class="card">
       <div class="card-title">Change Password</div>
@@ -1852,6 +1843,20 @@ async function buildProfile() {
     </div>
     <button class="btn btn-outline" style="width:100%;color:var(--red);border-color:var(--red);margin-top:4px" onclick="signOut()">🚪 Sign Out</button>
   </div>`;
+}
+
+
+async function saveProfileName() {
+  const first = document.getElementById('profile-first').value.trim();
+  const last = document.getElementById('profile-last').value.trim();
+  if(!first){showToast('First name cannot be empty','error');return;}
+  await db.collection('users').doc(currentUser.id).update({first,last}).catch(()=>{});
+  currentUser.first = first;
+  currentUser.last = last;
+  const nameDisplay = document.getElementById('profile-name-display');
+  if(nameDisplay) nameDisplay.textContent = first+' '+last;
+  addAudit('Profile Updated',first+' '+last+' updated their profile name','✏️','#fef3c7');
+  showToast('Name updated to '+first+' '+last+' ✓','success');
 }
 
 async function changePassword() {
@@ -1943,6 +1948,49 @@ function processChatMsg(text) {
 // ============================================================
 // SIGN OUT & INIT
 // ============================================================
+
+async function doGoogleLogin() {
+  try {
+    const provider = new firebase.auth.GoogleAuthProvider();
+    provider.addScope('email');
+    provider.addScope('profile');
+    const result = await auth.signInWithPopup(provider);
+    const user = result.user;
+    // Check if user exists in Firestore
+    const userDoc = await db.collection('users').doc(user.uid).get();
+    if(userDoc.exists) {
+      const data = userDoc.data();
+      if(!data.active){showToast('Account deactivated. Contact admin.','error');return;}
+      currentUser = {id:user.uid,...data};
+      await db.collection('users').doc(user.uid).update({lastLogin:new Date().toISOString()});
+    } else {
+      // New Google user - create as applicant by default
+      const names = (user.displayName||'').split(' ');
+      const first = names[0]||'User';
+      const last = names.slice(1).join(' ')||'';
+      const userData = {
+        first, last, email:user.email||'',
+        role:'applicant', active:true, verified:true,
+        policiesAccepted:false, lastLogin:new Date().toISOString(),
+        createdAt:new Date().toISOString(), googleAuth:true
+      };
+      await db.collection('users').doc(user.uid).set(userData);
+      currentUser = {id:user.uid,...userData};
+      showToast('Welcome to ALIEEP Connect, '+first+'! 🎉','success');
+    }
+    addAudit('Google Login',currentUser.first+' '+currentUser.last+' signed in with Google','🔐','#dbeafe');
+    const needsPolicy = ['applicant','participant'].includes(currentUser.role) && !currentUser.policiesAccepted;
+    if(needsPolicy){showPolicyGate();}else{launchApp();}
+  } catch(e) {
+    if(e.code==='auth/popup-closed-by-user'){return;}
+    if(e.code==='auth/unauthorized-domain'){
+      showToast('Google login not yet configured for this domain. Use email login.','error');
+    } else {
+      showToast('Google login failed: '+e.message,'error');
+    }
+  }
+}
+
 async function signOut() {
   try {
     if(currentUser) addAudit('Logout',currentUser.first+' '+currentUser.last+' signed out','🚪','#f3f4f6');
