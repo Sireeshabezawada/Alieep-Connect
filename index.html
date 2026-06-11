@@ -187,14 +187,9 @@ td{padding:10px 12px;border-top:1px solid var(--border);vertical-align:middle}
 <body>
 
 <!-- LOADING -->
-<div id="screen-loading" class="loading-screen">
+<div id="screen-loading" class="loading-screen hidden">
   <div class="spinner"></div>
   <p style="color:var(--gray);font-size:14px">Loading ALIEEP Connect...</p>
-  <button id="skip-loading-btn" onclick="showScreen('screen-auth')" 
-    style="display:none;margin-top:20px;padding:10px 20px;background:var(--red);color:white;border:none;border-radius:8px;font-size:14px;cursor:pointer">
-    Continue to Login →
-  </button>
-  <script>setTimeout(()=>{const b=document.getElementById('skip-loading-btn');if(b)b.style.display='block';},4000);</script>
 </div>
 
 <!-- AUTH -->
@@ -2011,27 +2006,30 @@ async function signOut() {
 
 function init() {
   injectImages();
-  // Safety timeout - if loading takes more than 5 seconds, show auth screen
-  const loadingTimeout = setTimeout(()=>{
-    showScreen('screen-auth');
-  }, 5000);
-  // Check if already logged in
-  auth.onAuthStateChanged(async user=>{
-    clearTimeout(loadingTimeout);
-    if(user && !currentUser) {
-      try {
-        const doc = await db.collection('users').doc(user.uid).get();
-        if(doc.exists && doc.data().active) {
-          currentUser = {id:user.uid,...doc.data()};
-          launchApp();
-          return;
+  // Show login screen IMMEDIATELY - don't wait for Firebase
+  showScreen('screen-auth');
+  // Then silently check if already logged in (in background)
+  try {
+    const unsubscribe = auth.onAuthStateChanged(async user=>{
+      unsubscribe(); // stop listening after first check
+      if(user && !currentUser) {
+        try {
+          const doc = await db.collection('users').doc(user.uid).get();
+          if(doc.exists && doc.data().active) {
+            currentUser = {id:user.uid,...doc.data()};
+            launchApp();
+          }
+        } catch(e){
+          // Stay on login screen
         }
-      } catch(e){
-        console.log('Auth check failed:', e);
       }
-    }
+    });
+    // If Firebase doesn't respond in 3 seconds, just stay on login
+    setTimeout(()=>{ try{unsubscribe();}catch(e){} }, 3000);
+  } catch(e) {
+    // Firebase error - just show login
     showScreen('screen-auth');
-  });
+  }
   // OTP paste handler
   const otp0 = document.getElementById('otp0');
   if(otp0) otp0.addEventListener('paste',e=>{
