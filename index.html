@@ -1,3 +1,4 @@
+<!-- BUILD:20250610-v41-NOCACHE -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -2039,7 +2040,7 @@ function init() {
     const last=document.getElementById('otp'+(Math.min(code.length,5)));if(last)last.focus();
   });
   // PWA
-  if('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(()=>{});
+  // Service worker disabled
   window.addEventListener('beforeinstallprompt',e=>{
     e.preventDefault();
     const banner=document.createElement('div');
@@ -2049,6 +2050,12 @@ function init() {
   });
 }
 
+// Unregister all service workers on load to fix caching issues
+if('serviceWorker' in navigator) {
+  navigator.serviceWorker.getRegistrations().then(regs => {
+    regs.forEach(reg => reg.unregister());
+  });
+}
 window.addEventListener('load', init);
 
 </script>
