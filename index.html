@@ -1,4 +1,4 @@
-<!-- BUILD:20250610-v41-NOCACHE -->
+<!-- BUILD:20250615-v42-SECURE -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -222,14 +222,7 @@ td{padding:10px 12px;border-top:1px solid var(--border);vertical-align:middle}
           <button class="btn-ghost btn" onclick="showForgot()">Forgot password?</button>
         </div>
         <button class="btn btn-primary" id="login-btn" onclick="doLogin()">Sign In</button>
-        <div class="divider">or try a demo account</div>
-        <div class="demo-btns">
-          <button class="demo-btn" onclick="demoLogin('applicant')">🎓 Applicant</button>
-          <button class="demo-btn" onclick="demoLogin('participant')">🌍 Participant</button>
-          <button class="demo-btn" onclick="demoLogin('staff')">📋 Staff</button>
-          <button class="demo-btn" onclick="demoLogin('admin')">🛡 Admin</button>
-          <button class="demo-btn" onclick="demoLogin('superadmin')" style="grid-column:span 2">⚡ Super Admin</button>
-        </div>
+        
         <div class="divider">or sign in with</div>
         <button onclick="doGoogleLogin()" style="width:100%;padding:11px;border:1.5px solid #e5e7eb;border-radius:8px;background:white;display:flex;align-items:center;justify-content:center;gap:10px;cursor:pointer;font-size:14px;font-weight:600;font-family:var(--font);transition:.2s" onmouseover="this.style.background='#f8f9fa'" onmouseout="this.style.background='white'">
           <svg width="18" height="18" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/><path fill="none" d="M0 0h48v48H0z"/></svg>
@@ -249,12 +242,13 @@ td{padding:10px 12px;border-top:1px solid var(--border);vertical-align:middle}
             <option value="participant">Participant</option>
             <option value="staff">Staff (requires @alieep.org email)</option>
           </select>
+          <div style="font-size:11px;color:var(--gray);margin-top:4px">Admin and Super Admin accounts are assigned by your organization and cannot be self-registered.</div>
         </div>
         <div id="alieep-email-note" class="hidden" style="font-size:12px;color:var(--red);margin:-8px 0 10px;padding:8px 12px;background:#fff5f5;border-radius:6px;border:1px solid #fecaca">
           ⚠️ Staff accounts require an <strong>@alieep.org</strong> email address
         </div>
         <div class="form-group"><label class="form-label">Password</label>
-          <div class="input-wrap"><input class="form-input" id="su-pass" type="password" placeholder="Min. 8 characters"><button class="input-eye" onclick="togglePw('su-pass',this)" tabindex="-1">👁</button></div>
+          <div class="input-wrap"><input class="form-input" id="su-pass" type="password" placeholder="Min. 8 chars, 1 uppercase, 1 number"><button class="input-eye" onclick="togglePw('su-pass',this)" tabindex="-1">👁</button></div>
         </div>
         <div class="form-group"><label class="form-label">Confirm Password</label>
           <div class="input-wrap"><input class="form-input" id="su-pass2" type="password" placeholder="Repeat password"><button class="input-eye" onclick="togglePw('su-pass2',this)" tabindex="-1">👁</button></div>
@@ -263,7 +257,7 @@ td{padding:10px 12px;border-top:1px solid var(--border);vertical-align:middle}
           <input type="checkbox" id="su-terms" style="width:16px;height:16px;accent-color:var(--red);margin-top:2px;flex-shrink:0">
           <label for="su-terms" style="font-size:12px;cursor:pointer">I agree to the <a href="https://alieep.org/privacy-policy/" target="_blank" style="color:var(--red)">Privacy Policy</a> and <a href="https://alieep.org/terms/" target="_blank" style="color:var(--red)">Terms of Use</a></label>
         </div>
-        <button class="btn btn-primary" onclick="doSignup()">Create Account</button>
+        <button class="btn btn-primary" onclick="doSignup()">Create Account & Verify Email</button>
         <div class="divider">or</div>
         <button onclick="doGoogleLogin()" style="width:100%;padding:11px;border:1.5px solid #e5e7eb;border-radius:8px;background:white;display:flex;align-items:center;justify-content:center;gap:10px;cursor:pointer;font-size:14px;font-weight:600;font-family:var(--font)">
           <svg width="18" height="18" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/><path fill="none" d="M0 0h48v48H0z"/></svg>
@@ -295,18 +289,12 @@ td{padding:10px 12px;border-top:1px solid var(--border);vertical-align:middle}
     <div class="auth-card">
       <div style="text-align:center;margin-bottom:20px"><img id="verify-logo" class="auth-logo" alt="ALIEEP"></div>
       <div style="font-size:20px;font-weight:700;text-align:center;margin-bottom:6px">Verify Your Email</div>
-      <div style="font-size:13px;color:var(--gray);text-align:center;margin-bottom:6px" id="verify-hint">Enter the 6-digit code sent to your email</div>
-      <div style="text-align:center;font-size:12px;color:var(--red);margin-bottom:16px">Demo code: <strong>123456</strong></div>
-      <div class="otp-row">
-        <input class="otp-input" id="otp0" maxlength="1" oninput="otpNext(this,0)" onkeydown="otpBack(event,0)" type="text" inputmode="numeric">
-        <input class="otp-input" id="otp1" maxlength="1" oninput="otpNext(this,1)" onkeydown="otpBack(event,1)" type="text" inputmode="numeric">
-        <input class="otp-input" id="otp2" maxlength="1" oninput="otpNext(this,2)" onkeydown="otpBack(event,2)" type="text" inputmode="numeric">
-        <input class="otp-input" id="otp3" maxlength="1" oninput="otpNext(this,3)" onkeydown="otpBack(event,3)" type="text" inputmode="numeric">
-        <input class="otp-input" id="otp4" maxlength="1" oninput="otpNext(this,4)" onkeydown="otpBack(event,4)" type="text" inputmode="numeric">
-        <input class="otp-input" id="otp5" maxlength="1" oninput="otpNext(this,5)" onkeydown="otpBack(event,5)" type="text" inputmode="numeric">
+      <div style="font-size:13px;color:var(--gray);text-align:center;margin-bottom:16px" id="verify-hint">We sent a verification link to your email. Click the link in the email, then press the button below.</div>
+      <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;padding:14px;margin-bottom:16px;font-size:13px;color:#166534;text-align:center">
+        📬 Check your inbox for an email from ALIEEP Connect and click <strong>"Verify Email"</strong>.
       </div>
-      <button class="btn btn-primary" onclick="doVerify()">Verify &amp; Continue</button>
-      <div style="text-align:center;margin-top:12px"><button class="btn-ghost btn" onclick="resendOtp()">Resend code</button></div>
+      <button class="btn btn-primary" onclick="doVerify()">✅ I Verified My Email — Continue</button>
+      <div style="text-align:center;margin-top:12px"><button class="btn-ghost btn" onclick="resendVerificationEmail()">Resend verification email</button></div>
     </div>
   </div>
 </div>
@@ -531,7 +519,27 @@ async function doLogin() {
     if(!userDoc.exists){showToast('Account not found. Contact admin.','error');btn.textContent='Sign In';btn.disabled=false;return;}
     const data = userDoc.data();
     if(!data.active){showToast('Account deactivated. Contact admin.','error');btn.textContent='Sign In';btn.disabled=false;return;}
+    // Check Firebase email verification for non-Google accounts
+    if(!cred.user.emailVerified && !data.googleAuth) {
+      // Allow existing verified accounts (verified:true in Firestore) to still log in
+      // This prevents locking out existing users while enforcing verification for new ones
+      if(!data.verified) {
+        showToast('Please verify your email first. Check your inbox for a verification link.','error');
+        // Offer to resend
+        btn.textContent='Sign In'; btn.disabled=false;
+        showToast('Need a new link? Use "Resend verification email" on the verify screen.','info');
+        currentUser = {id:cred.user.uid,...data};
+        document.getElementById('verify-hint').textContent = 'Check your inbox for a verification link sent to '+email;
+        showScreen('screen-verify');
+        return;
+      }
+    }
     currentUser = {id:cred.user.uid, ...data};
+    // Sync Firebase verification status to Firestore
+    if(cred.user.emailVerified && !data.verified) {
+      await db.collection('users').doc(cred.user.uid).update({verified:true}).catch(()=>{});
+      currentUser.verified = true;
+    }
     await db.collection('users').doc(cred.user.uid).update({lastLogin:new Date().toISOString()});
     addAudit('Login', currentUser.first+' '+currentUser.last+' logged in as '+currentUser.role, '✅', '#d1fae5');
     const needsPolicy = ['applicant','participant'].includes(currentUser.role) && !currentUser.policiesAccepted;
@@ -552,34 +560,41 @@ async function doSignup() {
   const pass2 = document.getElementById('su-pass2').value;
   const terms = document.getElementById('su-terms').checked;
   if(!first||!last||!email||!pass){showToast('Please fill all fields','error');return;}
-  // Email validation by role
-  if(['staff','admin','superadmin'].includes(role) && !email.endsWith('@alieep.org')) {
+  // Security: Public signup only allows applicant or participant
+  // Staff, admin, superadmin are assigned by organization — not self-selected
+  if(['admin','superadmin'].includes(role)) {
+    showToast('Admin accounts are assigned by your organization. Contact support.','error'); return;
+  }
+  // Staff requires verified @alieep.org domain
+  if(role === 'staff' && !email.endsWith('@alieep.org')) {
     showToast('Staff accounts require an @alieep.org email address','error'); return;
   }
+  // Enforce stronger password: min 8 chars, at least 1 uppercase, 1 number
   if(pass.length<8){showToast('Password must be at least 8 characters','error');return;}
+  if(!/[A-Z]/.test(pass)){showToast('Password must include at least one uppercase letter','error');return;}
+  if(!/[0-9]/.test(pass)){showToast('Password must include at least one number','error');return;}
   if(pass!==pass2){showToast('Passwords do not match','error');return;}
   if(!terms){showToast('Please accept the Terms of Use','error');return;}
   try {
     showToast('Creating account...');
     const cred = await auth.createUserWithEmailAndPassword(email, pass);
+    // Send real Firebase email verification
+    await cred.user.sendEmailVerification({
+      url: window.location.href
+    });
     const userData = {first,last,email,role,active:true,verified:false,policiesAccepted:false,lastLogin:null,createdAt:new Date().toISOString()};
     await db.collection('users').doc(cred.user.uid).set(userData);
     currentUser = {id:cred.user.uid,...userData};
     pendingAuthUser = currentUser;
     addAudit('User Registered','New '+role+': '+first+' '+last+' ('+email+')', '👤', '#d1fae5');
-    document.getElementById('verify-hint').textContent = 'We sent a code to '+email;
+    document.getElementById('verify-hint').textContent = 'We sent a verification link to '+email+'. Click the link in your email, then press "I Verified My Email" below.';
     clearOtp(); showScreen('screen-verify');
   } catch(e) {
     showToast(e.code==='auth/email-already-in-use'?'Email already registered':e.message,'error');
   }
 }
 
-async function demoLogin(role) {
-  const map = {applicant:'applicant@alieep.org',participant:'participant@alieep.org',staff:'staff@alieep.org',admin:'admin@alieep.org',superadmin:'superadmin@alieep.org'};
-  document.getElementById('login-email').value = map[role];
-  document.getElementById('login-pass').value = 'demo1234';
-  await doLogin();
-}
+// Demo login removed for security
 
 function showForgot(){showScreen('screen-forgot');}
 async function doForgot() {
@@ -594,20 +609,40 @@ async function doForgot() {
   }
 }
 
-function clearOtp(){for(let i=0;i<6;i++){const el=document.getElementById('otp'+i);if(el)el.value='';}}
-function otpNext(inp,i){inp.value=inp.value.replace(/[^0-9]/g,'');if(inp.value&&i<5)document.getElementById('otp'+(i+1)).focus();}
-function otpBack(e,i){if(e.key==='Backspace'&&!e.target.value&&i>0)document.getElementById('otp'+(i-1)).focus();}
-function resendOtp(){showToast('Code resent to your email');}
+function clearOtp(){}  // no-op (OTP boxes removed)
+async function resendVerificationEmail() {
+  try {
+    const fbUser = auth.currentUser;
+    if(fbUser) {
+      await fbUser.sendEmailVerification({ url: window.location.href });
+      showToast('Verification email resent! Check your inbox ✓','success');
+    } else {
+      showToast('Please sign in again to resend.','error');
+    }
+  } catch(e) {
+    showToast('Could not resend: '+e.message,'error');
+  }
+}
 
-function doVerify() {
-  const code = [0,1,2,3,4,5].map(i=>document.getElementById('otp'+i).value).join('');
-  if(code!=='123456'){showToast('Invalid code. Use 123456 for demo','error');return;}
+async function doVerify() {
+  // Real Firebase email verification — just check if Firebase confirmed the email
   if(!currentUser){showScreen('screen-auth');return;}
-  currentUser.verified = true;
-  db.collection('users').doc(currentUser.id).update({verified:true}).catch(()=>{});
-  addAudit('Email Verified',currentUser.first+' '+currentUser.last+' verified email','✅','#d1fae5');
-  const needsPolicy = ['applicant','participant'].includes(currentUser.role) && !currentUser.policiesAccepted;
-  if(needsPolicy){showPolicyGate();}else{launchApp();}
+  try {
+    // Reload the Firebase auth user to get the latest emailVerified status
+    const fbUser = auth.currentUser;
+    if(fbUser) await fbUser.reload();
+    if(fbUser && fbUser.emailVerified) {
+      currentUser.verified = true;
+      await db.collection('users').doc(currentUser.id).update({verified:true}).catch(()=>{});
+      addAudit('Email Verified',currentUser.first+' '+currentUser.last+' verified email','✅','#d1fae5');
+      const needsPolicy = ['applicant','participant'].includes(currentUser.role) && !currentUser.policiesAccepted;
+      if(needsPolicy){showPolicyGate();}else{launchApp();}
+    } else {
+      showToast('Email not verified yet. Check your inbox and click the link.','error');
+    }
+  } catch(e) {
+    showToast('Verification check failed: '+e.message,'error');
+  }
 }
 
 // ============================================================
@@ -1777,6 +1812,11 @@ function filterAuditLog(q) {
 async function buildSettings() {
   const v = document.getElementById('view-settings');
   v.innerHTML = `<div class="page-title">System Settings</div><div class="page-subtitle">Platform configuration</div>
+  <div class="alert" style="background:#fef3c7;border:1px solid #fbbf24;border-radius:10px;padding:14px;margin-bottom:16px">
+    <strong>⚠️ Security Reminder:</strong> If you used <code>setup.html</code> to create demo accounts
+    (admin@alieep.org, staff@alieep.org, applicant@alieep.org, participant@alieep.org with password <em>demo1234</em>),
+    please delete or change those accounts immediately via the Users section. They represent a security risk in production.
+  </div>
   <div class="card"><div class="card-title">Platform Info</div>
     ${[['Organization','Alabama Int\'l Education & Economic Partnership'],['Platform','ALIEEP Connect v4.0'],['Firebase Project','alieep-connect'],['Support','join@alieep.org']].map(([l,val])=>`<div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);font-size:14px"><span style="color:var(--gray)">${l}</span><strong style="text-align:right;max-width:60%">${val}</strong></div>`).join('')}
   </div>
@@ -2031,14 +2071,7 @@ function init() {
     // Firebase error - just show login
     showScreen('screen-auth');
   }
-  // OTP paste handler
-  const otp0 = document.getElementById('otp0');
-  if(otp0) otp0.addEventListener('paste',e=>{
-    e.preventDefault();
-    const code=(e.clipboardData||window.clipboardData).getData('text').replace(/\D/g,'').slice(0,6);
-    code.split('').forEach((c,i)=>{const el=document.getElementById('otp'+i);if(el)el.value=c;});
-    const last=document.getElementById('otp'+(Math.min(code.length,5)));if(last)last.focus();
-  });
+  // OTP removed — using real Firebase email verification
   // PWA
   // Service worker disabled
   window.addEventListener('beforeinstallprompt',e=>{
