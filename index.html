@@ -205,6 +205,9 @@ details summary{font-size:12px;font-weight:700;color:var(--gray-dk);cursor:point
     <div class="fg"><label class="fl">Password</label><div class="iw"><input class="fi" id="l-pass" type="password" placeholder="Password" autocomplete="current-password"><button class="eye" onclick="togglePw('l-pass',this)" tabindex="-1">👁</button></div></div>
     <div style="text-align:right;margin:-8px 0 16px"><button class="bgh" onclick="showScreen('s-forgot')">Forgot password?</button></div>
     <button class="btn bp" id="l-btn" onclick="doLogin()">Sign In</button>
+    <div style="margin-top:14px;padding:12px;background:#fff8f0;border:1px solid #fed7aa;border-radius:10px;font-size:12px;color:#92400e;text-align:center">
+      🛡 <strong>ALIEEP Staff?</strong> Sign in with your <strong>@alieep.org</strong> email for Admin access.
+    </div>
     <div class="div">or</div>
     <button onclick="doGoogle()" style="width:100%;padding:12px;border:1.5px solid var(--border);border-radius:8px;background:white;display:flex;align-items:center;justify-content:center;gap:10px;cursor:pointer;font-size:14px;font-weight:600;font-family:var(--font)" onmouseover="this.style.background='#f8f9fa'" onmouseout="this.style.background='white'">
       <svg width="18" height="18" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
@@ -213,9 +216,9 @@ details summary{font-size:12px;font-weight:700;color:var(--gray-dk);cursor:point
   </div>
   <!-- SIGNUP -->
   <div id="f-signup" class="hidden">
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
-      <div class="fg"><label class="fl">First Name</label><input class="fi" id="s-first" type="text" placeholder="Jane"></div>
-      <div class="fg"><label class="fl">Last Name</label><input class="fi" id="s-last" type="text" placeholder="Doe"></div>
+    <div style="display:flex;gap:12px;margin-bottom:0">
+      <div class="fg" style="flex:1"><label class="fl">First Name</label><input class="fi" id="s-first" type="text" placeholder="Jane"></div>
+      <div class="fg" style="flex:1"><label class="fl">Last Name</label><input class="fi" id="s-last" type="text" placeholder="Doe"></div>
     </div>
     <div class="fg"><label class="fl">Email Address</label><input class="fi" id="s-email" type="email" placeholder="your@email.com"></div>
     <div class="fg"><label class="fl">Phone Number</label><input class="fi" id="s-phone" type="tel" placeholder="+1 (555) 000-0000"></div>
@@ -430,13 +433,19 @@ async function loadAndLaunch(fbUser){
   }
   const data=snap.data();
   if(!data.active){toast('Account deactivated. Contact ALIEEP.','e');await auth.signOut();return;}
+  // Always ensure email is set (may be missing for old accounts)
+  const resolvedEmail = data.email || fbUser.email || '';
+  if(!data.email && resolvedEmail) {
+    await db.collection('users').doc(fbUser.uid).update({email:resolvedEmail}).catch(()=>{});
+    data.email = resolvedEmail;
+  }
   // Enforce @alieep.org for admin access — fix role if wrong
-  const correctRole=roleFromEmail(data.email);
+  const correctRole=roleFromEmail(resolvedEmail);
   if(data.role!==correctRole){
     await db.collection('users').doc(fbUser.uid).update({role:correctRole});
     data.role=correctRole;
   }
-  CU={id:fbUser.uid,...data};
+  CU={id:fbUser.uid,...data, email:resolvedEmail};
   await db.collection('users').doc(fbUser.uid).update({lastLogin:firebase.firestore.FieldValue.serverTimestamp()}).catch(()=>{});
   audit('Login',CU.first+' '+CU.last+' signed in as '+CU.role,'✅');
   launch();
@@ -651,12 +660,16 @@ async function startApply(progId){
 async function submitApply(progId){
   const p=PROGS.find(x=>x.id===progId);
   const stmt=document.getElementById('a-stmt').value.trim();
-  const exp=document.getElementById('a-exp').value;
+  const exp=document.getElementById('a-exp').value||'0';
   const cty=document.getElementById('a-cty').value.trim();
   if(!stmt){toast('Write a personal statement','e');return;}
+  // Sanitize — Firestore rejects undefined values
+  const safeEmail = CU.email||'';
+  const safeName = (CU.first||'')+(CU.last?' '+CU.last:'');
+  const safePhone = CU.phone||'';
   try{
     await db.collection('applications').add({
-      uid:CU.id,name:CU.first+' '+CU.last,email:CU.email,phone:CU.phone||'',
+      uid:CU.id,name:safeName,email:safeEmail,phone:safePhone,
       progId,program:p.title,status:'Submitted',step:2,
       statement:stmt,experience:exp,country:cty,
       requiredDocs:p.docs||[],adminComment:'',
@@ -766,7 +779,7 @@ async function uploadDoc(e,type,existId,appId){
     const path=`documents/${CU.id}/${Date.now()}_${file.name}`;
     const ref=stor.ref(path);await ref.put(file);
     const url=await ref.getDownloadURL();
-    const data={uid:CU.id,name:CU.first+' '+CU.last,email:CU.email,type,
+    const data={uid:CU.id,name:(CU.first||'')+' '+(CU.last||''),email:CU.email||'',type,
       fileName:file.name,fileSize:file.size<1048576?Math.round(file.size/1024)+' KB':(file.size/1048576).toFixed(1)+' MB',
       storagePath:path,downloadUrl:url,status:'Pending',adminNote:'',
       uploaded:now(),applicationId:appId||'',createdAt:firebase.firestore.FieldValue.serverTimestamp()};
