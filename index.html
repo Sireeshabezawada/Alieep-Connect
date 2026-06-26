@@ -697,18 +697,24 @@ function buildNav() {
   ).join('');
 }
 
-const VIEW_FNS = {
-  home:buildHome, programs:buildPrograms, tracker:buildTracker, documents:buildDocuments,
-  payment:buildPayment, applications:buildApplications, docreview:buildDocReview,
-  announcements:buildAnnouncements, users:buildUsers, reports:buildReports,
-  notifications:buildNotifications, profile:buildProfile, settings:buildSettings
-};
+function getViewFn(id) {
+  const map = {
+    home:()=>buildHome(), programs:()=>buildPrograms(), tracker:()=>buildTracker(),
+    documents:()=>buildDocuments(), payment:()=>buildPayment(),
+    applications:()=>buildApplications(), docreview:()=>buildDocReview(),
+    announcements:()=>buildAnnouncements(), users:()=>buildUsers(),
+    reports:()=>buildReports(), notifications:()=>buildNotifications(),
+    profile:()=>buildProfile(), settings:()=>buildSettings()
+  };
+  return map[id];
+}
 
 function showView(id) {
   document.querySelectorAll('.page').forEach(p=>p.classList.add('hidden'));
   document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
   const view = document.getElementById('view-'+id);
-  if(view){view.classList.remove('hidden');if(VIEW_FNS[id])VIEW_FNS[id]();}
+  const fn = getViewFn(id);
+  if(view){view.classList.remove('hidden');if(fn)fn();}
   const nav = document.getElementById('nav-'+id);
   if(nav) nav.classList.add('active');
   const mc = document.getElementById('main-content');
