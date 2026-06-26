@@ -576,11 +576,12 @@ async function buildHome(){
   const v=document.getElementById('v-home');
   v.innerHTML=`<div class="hero"><div class="hg">Welcome back 👋</div><div class="hn">${CU.first} ${CU.last}</div><span class="hb">${isParticipant()?'🌍 Participant':'🎓 Applicant'}</span></div><div class="spin"></div>`;
   try{
-    const [appSnap,annSnap]=await Promise.all([
-      db.collection('applications').where('uid','==',CU.id).orderBy('createdAt','desc').limit(1).get(),
-      db.collection('announcements').where('audience','in',['all',CU.role]).orderBy('createdAt','desc').limit(3).get()
+    const [appRaw,annSnap]=await Promise.all([
+      db.collection('applications').where('uid','==',CU.id).get(),
+      db.collection('announcements').orderBy('createdAt','desc').limit(10).get()
     ]);
-    const app=appSnap.empty?null:{id:appSnap.docs[0].id,...appSnap.docs[0].data()};
+    appRaw.docs.sort((a,b)=>(b.data().createdAt?.seconds||0)-(a.data().createdAt?.seconds||0));
+    const app=appRaw.empty?null:{id:appRaw.docs[0].id,...appRaw.docs[0].data()};
     const status=app?app.status:CU.status||'Applicant';
     v.innerHTML=`<div class="hero"><div class="hg">Welcome back 👋</div><div class="hn">${CU.first} ${CU.last}</div><span class="hb">📊 ${status}</span></div>
     ${status==='Payment Pending'?`<div class="al alw">💳 Documents approved! Complete your <strong>$500 fee</strong> to become a Participant. <button class="bgh" onclick="showView('payment')">Pay Now →</button></div>`:''}
@@ -674,7 +675,7 @@ async function buildTracker(){
   const v=document.getElementById('v-tracker');
   v.innerHTML=`<div class="pt">Application Tracker</div><div class="ps">Your progress at a glance</div><div class="spin"></div>`;
   try{
-    const snap=await db.collection('applications').where('uid','==',CU.id).orderBy('createdAt','desc').limit(1).get();
+    const snap=await db.collection('applications').where('uid','==',CU.id).get(); snap.docs.sort((a,b)=>(b.data().createdAt?.seconds||0)-(a.data().createdAt?.seconds||0));
     if(snap.empty){
       v.innerHTML=`<div class="pt">Application Tracker</div><div class="ps">Your progress</div>
       <div class="es"><div class="ei">📋</div><p>No application yet</p><button class="btn bp" style="width:auto;margin:16px auto 0;display:block;padding:10px 24px" onclick="showView('programs')">Browse Programs →</button></div>`;
@@ -722,7 +723,7 @@ async function buildDocuments(){
   const v=document.getElementById('v-documents');
   v.innerHTML=`<div class="pt">My Documents</div><div class="ps">Upload required documents</div><div class="spin"></div>`;
   try{
-    const appSnap=await db.collection('applications').where('uid','==',CU.id).orderBy('createdAt','desc').limit(1).get();
+    const appSnap=await db.collection('applications').where('uid','==',CU.id).get(); appSnap.docs.sort((a,b)=>(b.data().createdAt?.seconds||0)-(a.data().createdAt?.seconds||0));
     const app=appSnap.empty?null:{id:appSnap.docs[0].id,...appSnap.docs[0].data()};
     const reqDocs=app?.requiredDocs||['Passport','Resume/CV','Degree Certificate','Official Transcripts'];
     const docSnap=await db.collection('documents').where('uid','==',CU.id).get();
@@ -855,7 +856,7 @@ async function buildPayment(){
   <div class="pay-hero"><div class="pay-amt">$500</div><div class="pay-lbl">ALIEEP Application Fee</div></div>
   <div class="spin"></div>`;
   try{
-    const appSnap=await db.collection('applications').where('uid','==',CU.id).orderBy('createdAt','desc').limit(1).get();
+    const appSnap=await db.collection('applications').where('uid','==',CU.id).get(); appSnap.docs.sort((a,b)=>(b.data().createdAt?.seconds||0)-(a.data().createdAt?.seconds||0));
     const app=appSnap.empty?null:{id:appSnap.docs[0].id,...appSnap.docs[0].data()};
     v.innerHTML=`<div class="pt">Application Fee</div><div class="ps">$500 application fee</div>
     <div class="pay-hero"><div class="pay-amt">$500</div><div class="pay-lbl">ALIEEP Application Fee</div></div>
@@ -1135,8 +1136,9 @@ async function loadDRFn(st){
   const el=document.getElementById('dr-list');if(!el)return;
   try{
     let snap;
-    if(st==='all')snap=await db.collection('documents').orderBy('createdAt','desc').get();
-    else snap=await db.collection('documents').where('status','==',st).orderBy('createdAt','desc').get();
+    if(st==='all')snap=await db.collection('documents').get();
+    else snap=await db.collection('documents').where('status','==',st).get();
+    if(snap&&snap.docs)snap.docs.sort((a,b)=>(b.data().createdAt?.seconds||0)-(a.data().createdAt?.seconds||0));
     if(snap.empty){el.innerHTML=`<div class="es"><div class="ei">📎</div><p>No ${st} documents</p></div>`;return;}
     el.innerHTML=snap.docs.map(d=>{const doc={id:d.id,...d.data()};return`<div class="dc ${(doc.status||'').toLowerCase()}" style="margin-bottom:10px">
       <div class="dh"><div class="di">📄</div>
