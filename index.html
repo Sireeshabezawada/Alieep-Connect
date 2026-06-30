@@ -201,8 +201,17 @@ details summary{font-size:12px;font-weight:700;color:var(--gray-dk);cursor:point
   </div>
   <!-- LOGIN -->
   <div id="f-login">
-    <div class="fg"><label class="fl">Email Address</label><input class="fi" id="l-email" type="email" placeholder="your@email.com" autocomplete="email"></div>
-    <div class="fg"><label class="fl">Password</label><div class="iw"><input class="fi" id="l-pass" type="password" placeholder="Password" autocomplete="current-password"><button class="eye" onclick="togglePw('l-pass',this)" tabindex="-1">👁</button></div></div>
+    <div style="margin-bottom:16px">
+      <label style="display:block;font-size:12px;font-weight:700;color:#374151;margin-bottom:6px;text-transform:uppercase;letter-spacing:.3px">Email Address</label>
+      <input id="l-email" type="email" placeholder="your@email.com" autocomplete="email" style="width:100%;padding:12px 14px;border:1.5px solid #E5E7EB;border-radius:8px;font-size:14px;outline:none;background:#fff;color:#111;box-sizing:border-box;font-family:inherit">
+    </div>
+    <div style="margin-bottom:8px">
+      <label style="display:block;font-size:12px;font-weight:700;color:#374151;margin-bottom:6px;text-transform:uppercase;letter-spacing:.3px">Password</label>
+      <div style="position:relative">
+        <input id="l-pass" type="password" placeholder="Password" autocomplete="current-password" style="width:100%;padding:12px 44px 12px 14px;border:1.5px solid #E5E7EB;border-radius:8px;font-size:14px;outline:none;background:#fff;color:#111;box-sizing:border-box;font-family:inherit">
+        <button onclick="togglePw('l-pass',this)" tabindex="-1" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:18px;padding:4px;color:#6B7280">👁</button>
+      </div>
+    </div>
     <div style="text-align:right;margin:-8px 0 16px"><button class="bgh" onclick="showScreen('s-forgot')">Forgot password?</button></div>
     <button class="btn bp" id="l-btn" onclick="doLogin()">Sign In</button>
     <div style="margin-top:14px;padding:12px;background:#fff8f0;border:1px solid #fed7aa;border-radius:10px;font-size:12px;color:#92400e;text-align:center">
@@ -216,20 +225,44 @@ details summary{font-size:12px;font-weight:700;color:var(--gray-dk);cursor:point
   </div>
   <!-- SIGNUP -->
   <div id="f-signup" class="hidden">
-    <div style="display:flex;gap:12px;margin-bottom:0">
-      <div class="fg" style="flex:1"><label class="fl">First Name</label><input class="fi" id="s-first" type="text" placeholder="Jane"></div>
-      <div class="fg" style="flex:1"><label class="fl">Last Name</label><input class="fi" id="s-last" type="text" placeholder="Doe"></div>
+    <div style="display:flex;gap:12px">
+      <div style="flex:1;margin-bottom:16px">
+        <label style="display:block;font-size:12px;font-weight:700;color:#374151;margin-bottom:6px;text-transform:uppercase;letter-spacing:.3px">First Name</label>
+        <input id="s-first" type="text" placeholder="Jane" style="width:100%;padding:12px 14px;border:1.5px solid #E5E7EB;border-radius:8px;font-size:14px;outline:none;background:#fff;color:#111;box-sizing:border-box;font-family:inherit">
+      </div>
+      <div style="flex:1;margin-bottom:16px">
+        <label style="display:block;font-size:12px;font-weight:700;color:#374151;margin-bottom:6px;text-transform:uppercase;letter-spacing:.3px">Last Name</label>
+        <input id="s-last" type="text" placeholder="Doe" style="width:100%;padding:12px 14px;border:1.5px solid #E5E7EB;border-radius:8px;font-size:14px;outline:none;background:#fff;color:#111;box-sizing:border-box;font-family:inherit">
+      </div>
     </div>
-    <div class="fg"><label class="fl">Email Address</label><input class="fi" id="s-email" type="email" placeholder="your@email.com"></div>
-    <div class="fg"><label class="fl">Phone Number</label><input class="fi" id="s-phone" type="tel" placeholder="+1 (555) 000-0000"></div>
-    <div class="fg"><label class="fl">Password</label><div class="iw"><input class="fi" id="s-pass" type="password" placeholder="Min 8 chars, 1 uppercase, 1 number"><button class="eye" onclick="togglePw('s-pass',this)" tabindex="-1">👁</button></div></div>
-    <div class="fg"><label class="fl">Confirm Password</label><div class="iw"><input class="fi" id="s-pass2" type="password" placeholder="Repeat password"><button class="eye" onclick="togglePw('s-pass2',this)" tabindex="-1">👁</button></div></div>
-    <div style="display:flex;gap:8px;align-items:flex-start;margin-bottom:16px;padding:10px 12px;background:var(--gray-lt);border-radius:8px">
-      <input type="checkbox" id="s-terms" style="width:16px;height:16px;accent-color:var(--red);margin-top:2px;flex-shrink:0">
-      <label for="s-terms" style="font-size:12px;cursor:pointer;color:var(--gray-dk)">I agree to the <a href="https://alieep.org/privacy-policy/" target="_blank" style="color:var(--red)">Privacy Policy</a> and <a href="https://alieep.org/terms/" target="_blank" style="color:var(--red)">Terms of Use</a></label>
+    <div style="margin-bottom:16px">
+      <label style="display:block;font-size:12px;font-weight:700;color:#374151;margin-bottom:6px;text-transform:uppercase;letter-spacing:.3px">Email Address</label>
+      <input id="s-email" type="email" placeholder="your@email.com" style="width:100%;padding:12px 14px;border:1.5px solid #E5E7EB;border-radius:8px;font-size:14px;outline:none;background:#fff;color:#111;box-sizing:border-box;font-family:inherit">
+    </div>
+    <div style="margin-bottom:16px">
+      <label style="display:block;font-size:12px;font-weight:700;color:#374151;margin-bottom:6px;text-transform:uppercase;letter-spacing:.3px">Phone Number</label>
+      <input id="s-phone" type="tel" placeholder="+1 (555) 000-0000" style="width:100%;padding:12px 14px;border:1.5px solid #E5E7EB;border-radius:8px;font-size:14px;outline:none;background:#fff;color:#111;box-sizing:border-box;font-family:inherit">
+    </div>
+    <div style="margin-bottom:16px">
+      <label style="display:block;font-size:12px;font-weight:700;color:#374151;margin-bottom:6px;text-transform:uppercase;letter-spacing:.3px">Password</label>
+      <div style="position:relative">
+        <input id="s-pass" type="password" placeholder="Min 8 chars, 1 uppercase, 1 number" style="width:100%;padding:12px 44px 12px 14px;border:1.5px solid #E5E7EB;border-radius:8px;font-size:14px;outline:none;background:#fff;color:#111;box-sizing:border-box;font-family:inherit">
+        <button onclick="togglePw('s-pass',this)" tabindex="-1" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:18px;padding:4px;color:#6B7280">👁</button>
+      </div>
+    </div>
+    <div style="margin-bottom:16px">
+      <label style="display:block;font-size:12px;font-weight:700;color:#374151;margin-bottom:6px;text-transform:uppercase;letter-spacing:.3px">Confirm Password</label>
+      <div style="position:relative">
+        <input id="s-pass2" type="password" placeholder="Repeat password" style="width:100%;padding:12px 44px 12px 14px;border:1.5px solid #E5E7EB;border-radius:8px;font-size:14px;outline:none;background:#fff;color:#111;box-sizing:border-box;font-family:inherit">
+        <button onclick="togglePw('s-pass2',this)" tabindex="-1" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:18px;padding:4px;color:#6B7280">👁</button>
+      </div>
+    </div>
+    <div style="display:flex;gap:8px;align-items:flex-start;margin-bottom:16px;padding:10px 12px;background:#F3F4F6;border-radius:8px">
+      <input type="checkbox" id="s-terms" style="width:16px;height:16px;accent-color:#C8102E;margin-top:2px;flex-shrink:0">
+      <label for="s-terms" style="font-size:12px;cursor:pointer;color:#374151">I agree to the <a href="https://alieep.org/privacy-policy/" target="_blank" style="color:#C8102E">Privacy Policy</a> and <a href="https://alieep.org/terms/" target="_blank" style="color:#C8102E">Terms of Use</a></label>
     </div>
     <button class="btn bp" onclick="doSignup()">Create Account</button>
-    <p style="text-align:center;font-size:12px;color:var(--gray);margin-top:10px">✉️ A verification email will be sent. <br>@alieep.org accounts get Admin access.</p>
+    <p style="text-align:center;font-size:12px;color:#6B7280;margin-top:10px">✉️ A verification email will be sent.<br>@alieep.org accounts get Admin access.</p>
   </div>
 </div></div>
 </div>
@@ -239,8 +272,11 @@ details summary{font-size:12px;font-weight:700;color:var(--gray-dk);cursor:point
 <div class="auth-bg"><div class="auth-card">
   <img id="fl-logo" class="auth-logo" alt="ALIEEP">
   <div class="auth-sub">Reset Password</div>
-  <p style="text-align:center;font-size:13px;color:var(--gray);margin-bottom:20px">Enter your email and we'll send a reset link</p>
-  <div class="fg"><label class="fl">Email</label><input class="fi" id="fg-email" type="email" placeholder="your@email.com"></div>
+  <p style="text-align:center;font-size:13px;color:#6B7280;margin-bottom:20px">Enter your email and we'll send a reset link</p>
+  <div style="margin-bottom:16px">
+    <label style="display:block;font-size:12px;font-weight:700;color:#374151;margin-bottom:6px;text-transform:uppercase;letter-spacing:.3px">Email Address</label>
+    <input id="fg-email" type="email" placeholder="your@email.com" style="width:100%;padding:12px 14px;border:1.5px solid #E5E7EB;border-radius:8px;font-size:14px;outline:none;background:#fff;color:#111;box-sizing:border-box;font-family:inherit">
+  </div>
   <button class="btn bp" onclick="doForgot()">Send Reset Link</button>
   <div style="text-align:center;margin-top:14px"><button class="bgh" onclick="showScreen('s-auth')">← Back to Sign In</button></div>
 </div></div>
